@@ -1,6 +1,7 @@
 # Procrastinator's To-Do List
 
 ## Project Overview
+
 The **Procrastinator's To-Do List** is a playful and interactive task management application designed for those who love to delay their tasks with style. Unlike traditional to-do apps, this app embraces procrastination and adds a humorous twist, making it fun while subtly helping users manage their tasks more effectively. It’s productivity with a touch of irony!
 
 ---
@@ -20,15 +21,18 @@ The **Procrastinator's To-Do List** is a playful and interactive task management
 ## Tech Stack
 
 ### **Frontend**
+
 - React.js (for an interactive user interface)
 - CSS/Bootstrap (for styling)
 - Axios (for API integration)
 
 ### **Backend**
+
 - Node.js with Express.js (to manage APIs and business logic)
 - MongoDB (to store tasks, excuses, and statistics)
 
 ### **Other Tools**
+
 - Postman (for API testing)
 - Vercel/Netlify (frontend deployment)
 - Render/Heroku (backend deployment)
@@ -47,6 +51,7 @@ The **Procrastinator's To-Do List** is a playful and interactive task management
 ## Why This Project?
 
 This project is fun, relatable, and engaging. It stands out with its humorous take on procrastination while still providing essential task management features. By building this, we:
+
 - Enhance skills in **full-stack development** (MERN stack).
 - Explore creative **UI/UX design** with dynamic and fun elements.
 - Develop a product that resonates with a universal audience.
@@ -59,3 +64,5 @@ This project is fun, relatable, and engaging. It stands out with its humorous ta
 2. **Social Features**: Allow users to share excuses and stats with friends.
 3. **Mobile App**: Extend the app to mobile platforms using React Native.
 4. **Notifications**: Add push notifications for task reminders and procrastination stats.
+
+Deployment Link: https://s72-procrastinators-to-do-list.onrender.com
