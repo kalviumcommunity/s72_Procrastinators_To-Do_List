@@ -1,0 +1,17 @@
+meta {
+  name: ping
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:5000/ping
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "message":"Pong!"
+  }
+}
