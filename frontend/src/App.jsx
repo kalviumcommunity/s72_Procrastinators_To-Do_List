@@ -29,70 +29,80 @@ function App() {
   return (
     <div
       style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh", // Full screen height
+        width: "100vw", // Full screen width
         textAlign: "center",
-        padding: "50px",
         fontFamily: "Arial, sans-serif",
       }}
     >
-      <h1>🕰️ Procrastinator’s To-Do List 😴</h1>
-      <h3>The to-do list that *understands* you.</h3>
-      <p>
-        Tired of productivity apps that expect you to be **responsible**? We've
-        got you covered. ✨
-      </p>
-
-      <div style={{ marginTop: "30px" }}>
-        <h2>❌ Need an excuse?</h2>
-        <p>{excuse}</p>
-        <button
-          onClick={() =>
-            setExcuse(excuses[Math.floor(Math.random() * excuses.length)])
-          }
-          style={{
-            padding: "10px",
-            fontSize: "16px",
-            cursor: "pointer",
-            borderRadius: "5px",
-            backgroundColor: "#f87171",
-            color: "white",
-            border: "none",
-            marginTop: "10px",
-          }}
-        >
-          Generate Excuse
-        </button>
-      </div>
-
-      <div style={{ marginTop: "30px" }}>
-        <h2>💪 Need motivation?</h2>
-        <p>{motivation}</p>
-        <button
-          onClick={() =>
-            setMotivation(
-              motivations[Math.floor(Math.random() * motivations.length)]
-            )
-          }
-          style={{
-            padding: "10px",
-            fontSize: "16px",
-            cursor: "pointer",
-            borderRadius: "5px",
-            backgroundColor: "#60a5fa",
-            color: "white",
-            border: "none",
-            marginTop: "10px",
-          }}
-        >
-          Just Do It!
-        </button>
-      </div>
-
-      <div style={{ marginTop: "50px", fontStyle: "italic", fontSize: "14px" }}>
+      <div style={{ maxWidth: "600px", width: "90%" }}>
+        <h1>🕰️ Procrastinator’s To-Do List 😴</h1>
+        <h3>The to-do list that *understands* you.</h3>
         <p>
-          Warning: This app is highly addictive and may cause excessive
-          laughter.
+          Tired of productivity apps that expect you to be **responsible**?
+          We've got you covered. ✨
         </p>
-        <p>We take no responsibility for missed deadlines. That's on you. 🤷</p>
+
+        <div style={{ marginTop: "30px" }}>
+          <h2>❌ Need an excuse?</h2>
+          <p>{excuse}</p>
+          <button
+            onClick={() =>
+              setExcuse(excuses[Math.floor(Math.random() * excuses.length)])
+            }
+            style={{
+              padding: "10px",
+              fontSize: "16px",
+              cursor: "pointer",
+              borderRadius: "5px",
+              backgroundColor: "#f87171",
+              color: "white",
+              border: "none",
+              marginTop: "10px",
+            }}
+          >
+            Generate Excuse
+          </button>
+        </div>
+
+        <div style={{ marginTop: "30px" }}>
+          <h2>💪 Need motivation?</h2>
+          <p>{motivation}</p>
+          <button
+            onClick={() =>
+              setMotivation(
+                motivations[Math.floor(Math.random() * motivations.length)]
+              )
+            }
+            style={{
+              padding: "10px",
+              fontSize: "16px",
+              cursor: "pointer",
+              borderRadius: "5px",
+              backgroundColor: "#60a5fa",
+              color: "white",
+              border: "none",
+              marginTop: "10px",
+            }}
+          >
+            Just Do It!
+          </button>
+        </div>
+
+        <div
+          style={{ marginTop: "50px", fontStyle: "italic", fontSize: "14px" }}
+        >
+          <p>
+            Warning: This app is highly addictive and may cause excessive
+            laughter.
+          </p>
+          <p>
+            We take no responsibility for missed deadlines. That's on you. 🤷
+          </p>
+        </div>
       </div>
     </div>
   );
