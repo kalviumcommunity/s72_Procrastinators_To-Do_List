@@ -66,3 +66,5 @@ This project is fun, relatable, and engaging. It stands out with its humorous ta
 4. **Notifications**: Add push notifications for task reminders and procrastination stats.
 
 Deployment Link: https://s72-procrastinators-to-do-list.onrender.com
+
+Frontend Deployment Link: https://deploy-cloudflare.procrastinators-to-do-list.pages.dev/

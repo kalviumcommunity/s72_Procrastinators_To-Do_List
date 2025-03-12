@@ -2,9 +2,14 @@ const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true },
+    title: { type: String, required: true, minlength: 3 }, // Added minlength validation
     description: { type: String },
-    completed: { type: Boolean, default: false },
+    completed: { type: Boolean, default: false, index: true }, // Indexed for performance
+    priority: {
+      type: String,
+      enum: ["Low", "Medium", "High"],
+      default: "Medium",
+    }, // Added priority field
   },
   { timestamps: true }
 );

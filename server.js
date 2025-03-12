@@ -1,43 +1,51 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-console.log("MongoDB URI:", process.env.MONGO_URI); // Debugging line
-
-const taskRoutes = require("./routes");
+// Middleware
 app.use(express.json());
+app.use(cors()); // Enable CORS for frontend communication
+
+// Debugging MongoDB URI (Remove in production)
+if (!process.env.MONGO_URI) {
+  console.error("❌ Missing MONGO_URI in environment variables!");
+  process.exit(1);
+} else {
+  console.log("🔗 MongoDB URI loaded.");
+}
+
+// Import routes
+const taskRoutes = require("./routes");
 app.use("/api", taskRoutes);
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// Connect to MongoDB
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ Connected to MongoDB successfully"))
+  .catch((err) => console.error("❌ Database connection error:", err));
 
-const db = mongoose.connection;
-
-db.on("error", (err) => {
-  console.error("❌ Database connection error:", err);
-});
-
-db.once("open", () => {
-  console.log("✅ Connected to MongoDB successfully");
-});
-
+// Root Route
 app.get("/", (req, res) => {
-  const dbStatus =
-    mongoose.connection.readyState === 1 ? "Connected" : "Not Connected";
-  res.json({ message: "Welcome to ASAP Project!", database_status: dbStatus });
+  res.json({
+    message: "🚀 Welcome to ASAP Project!",
+    database_status:
+      mongoose.connection.readyState === 1 ? "Connected" : "Not Connected",
+  });
 });
 
-// /ping route
+// Health Check Route
 app.get("/ping", (req, res) => {
   res.send("Pong!");
 });
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`🎯 Server running on http://localhost:${PORT}`);
 });
