@@ -1,4 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import ProcrastinatorToDo from "./pages/ProcrastinatorToDo";
+import TaskCard from "./componenets/TaskCard";
+import { fetchTasks, addTask } from "./services/api";
+import AddTask from "./pages/AddTask";
 
 const excuses = [
   "Why do it now when Future You can suffer instead?",
@@ -19,91 +24,84 @@ const motivations = [
 ];
 
 function App() {
-  const [excuse, setExcuse] = useState(
-    "Click below to get an excuse for avoiding work."
-  );
-  const [motivation, setMotivation] = useState(
-    "Click below if you need an overly dramatic pep talk."
-  );
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    priority: "Medium",
+  });
+
+  // Fetch tasks from backend
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/tasks")
+      .then((res) => setTasks(res.data))
+      .catch((err) => console.error("❌ Error fetching tasks:", err));
+  }, []);
+
+  // Handle adding a new task
+  const handleAddTask = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/tasks",
+        newTask
+      );
+      setTasks([...tasks, response.data]); // Update UI instantly
+      setNewTask({ title: "", description: "", priority: "Medium" }); // Reset form
+    } catch (error) {
+      console.error("❌ Error adding task:", error);
+    }
+  };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh", // Full screen height
-        width: "100vw", // Full screen width
-        textAlign: "center",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <div style={{ maxWidth: "600px", width: "90%" }}>
-        <h1>🕰️ Procrastinator’s To-Do List 😴</h1>
-        <h3>The to-do list that *understands* you.</h3>
-        <p>
-          Tired of productivity apps that expect you to be **responsible**?
-          We've got you covered. ✨
-        </p>
+    <div style={{ textAlign: "center", fontFamily: "Arial, sans-serif" }}>
+      <h1>🕰️ Procrastinator’s To-Do List 😴</h1>
+      <h3>The to-do list that *understands* you.</h3>
 
-        <div style={{ marginTop: "30px" }}>
-          <h2>❌ Need an excuse?</h2>
-          <p>{excuse}</p>
-          <button
-            onClick={() =>
-              setExcuse(excuses[Math.floor(Math.random() * excuses.length)])
-            }
-            style={{
-              padding: "10px",
-              fontSize: "16px",
-              cursor: "pointer",
-              borderRadius: "5px",
-              backgroundColor: "#f87171",
-              color: "white",
-              border: "none",
-              marginTop: "10px",
-            }}
-          >
-            Generate Excuse
-          </button>
-        </div>
-
-        <div style={{ marginTop: "30px" }}>
-          <h2>💪 Need motivation?</h2>
-          <p>{motivation}</p>
-          <button
-            onClick={() =>
-              setMotivation(
-                motivations[Math.floor(Math.random() * motivations.length)]
-              )
-            }
-            style={{
-              padding: "10px",
-              fontSize: "16px",
-              cursor: "pointer",
-              borderRadius: "5px",
-              backgroundColor: "#60a5fa",
-              color: "white",
-              border: "none",
-              marginTop: "10px",
-            }}
-          >
-            Just Do It!
-          </button>
-        </div>
-
-        <div
-          style={{ marginTop: "50px", fontStyle: "italic", fontSize: "14px" }}
+      {/* Task Form */}
+      <form onSubmit={handleAddTask} style={{ marginBottom: "20px" }}>
+        <input
+          type="text"
+          placeholder="Task title..."
+          value={newTask.title}
+          onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Task description..."
+          value={newTask.description}
+          onChange={(e) =>
+            setNewTask({ ...newTask, description: e.target.value })
+          }
+        />
+        <select
+          value={newTask.priority}
+          onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
         >
-          <p>
-            Warning: This app is highly addictive and may cause excessive
-            laughter.
-          </p>
-          <p>
-            We take no responsibility for missed deadlines. That's on you. 🤷
-          </p>
-        </div>
-      </div>
+          <option value="Low">Low 🟢</option>
+          <option value="Medium">Medium 🟡</option>
+          <option value="High">High 🔥</option>
+        </select>
+        <button type="submit">➕ Add Task</button>
+      </form>
+
+      {/* Task List */}
+      {tasks.length > 0 ? (
+        tasks.map((task) => (
+          <TaskCard
+            key={task._id}
+            task={task.title}
+            excuse={excuses[Math.floor(Math.random() * excuses.length)]}
+            motivation={
+              motivations[Math.floor(Math.random() * motivations.length)]
+            }
+          />
+        ))
+      ) : (
+        <p>No tasks yet! Maybe later? 😆</p>
+      )}
     </div>
   );
 }
