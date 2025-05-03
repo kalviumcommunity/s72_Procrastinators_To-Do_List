@@ -1,107 +1,241 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import ProcrastinatorToDo from "./pages/ProcrastinatorToDo";
-import TaskCard from "./componenets/TaskCard";
-import { fetchTasks, addTask } from "./services/api";
-import AddTask from "./pages/AddTask";
-
-const excuses = [
-  "Why do it now when Future You can suffer instead?",
-  "Hard work pays off later… but laziness pays off now.",
-  "Procrastinators unite!... tomorrow.",
-  "Your bed is calling. Answer it.",
-  "If it's urgent, they’ll remind you again, right?",
-  "Einstein probably procrastinated too. Be like Einstein.",
-];
-
-const motivations = [
-  "Your future self is already judging you.",
-  "That task isn’t going to do itself… or will it?",
-  "Think of how smug you’ll feel after doing this.",
-  "DO IT! (But like… after a snack.)",
-  "Every second you waste is a second you can never get back. No pressure.",
-  "Shia LaBeouf is watching. Just. Do. It.",
-];
+import { useState } from "react";
+import { addTask } from "./services/api";
+import TaskList from "./componenets/TaskList";
+import TaskGraveyard from "./componenets/TaskGraveyard";
+import ProductivityInsights from "./componenets/ProductivityInsights";
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const [activeView, setActiveView] = useState("tasks"); // "tasks", "graveyard", "insights"
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
     priority: "Medium",
+    deadline: "",
   });
-
-  // Fetch tasks from backend
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/tasks")
-      .then((res) => setTasks(res.data))
-      .catch((err) => console.error("❌ Error fetching tasks:", err));
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   // Handle adding a new task
   const handleAddTask = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/tasks",
-        newTask
-      );
-      setTasks([...tasks, response.data]); // Update UI instantly
-      setNewTask({ title: "", description: "", priority: "Medium" }); // Reset form
+      const response = await addTask(newTask);
+      if (response && response.task) {
+        // Reset form
+        setNewTask({
+          title: "",
+          description: "",
+          priority: "Medium",
+          deadline: "",
+        });
+
+        // Force refresh of TaskList component by changing key
+        setActiveView("other");
+        setTimeout(() => setActiveView("tasks"), 10);
+      }
     } catch (error) {
       console.error("❌ Error adding task:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <div style={{ textAlign: "center", fontFamily: "Arial, sans-serif" }}>
-      <h1>🕰️ Procrastinator’s To-Do List 😴</h1>
-      <h3>The to-do list that *understands* you.</h3>
+  // Navigation buttons
+  const renderNavButtons = () => (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: "10px",
+        margin: "20px 0",
+        flexWrap: "wrap",
+      }}
+    >
+      <button
+        onClick={() => setActiveView("tasks")}
+        style={{
+          padding: "10px 15px",
+          backgroundColor: activeView === "tasks" ? "#2980b9" : "#555",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontSize: "16px",
+        }}
+      >
+        📝 Tasks
+      </button>
+      <button
+        onClick={() => setActiveView("graveyard")}
+        style={{
+          padding: "10px 15px",
+          backgroundColor: activeView === "graveyard" ? "#8e44ad" : "#555",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontSize: "16px",
+        }}
+      >
+        💀 Task Graveyard
+      </button>
+      <button
+        onClick={() => setActiveView("insights")}
+        style={{
+          padding: "10px 15px",
+          backgroundColor: activeView === "insights" ? "#16a085" : "#555",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontSize: "16px",
+        }}
+      >
+        📊 Insights
+      </button>
+    </div>
+  );
 
-      {/* Task Form */}
-      <form onSubmit={handleAddTask} style={{ marginBottom: "20px" }}>
+  // Render task form
+  const renderTaskForm = () => (
+    <form
+      onSubmit={handleAddTask}
+      style={{
+        marginBottom: "20px",
+        backgroundColor: "#333",
+        padding: "20px",
+        borderRadius: "10px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "15px",
+      }}
+    >
+      <div>
         <input
           type="text"
           placeholder="Task title..."
           value={newTask.title}
           onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
           required
+          style={{
+            padding: "10px",
+            width: "100%",
+            fontSize: "16px",
+            borderRadius: "5px",
+            border: "1px solid #555",
+          }}
         />
-        <input
-          type="text"
-          placeholder="Task description..."
+      </div>
+
+      <div>
+        <textarea
+          placeholder="Task description... or don't bother, who cares?"
           value={newTask.description}
           onChange={(e) =>
             setNewTask({ ...newTask, description: e.target.value })
           }
+          style={{
+            padding: "10px",
+            width: "100%",
+            fontSize: "16px",
+            minHeight: "100px",
+            borderRadius: "5px",
+            border: "1px solid #555",
+          }}
         />
-        <select
-          value={newTask.priority}
-          onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
-        >
-          <option value="Low">Low 🟢</option>
-          <option value="Medium">Medium 🟡</option>
-          <option value="High">High 🔥</option>
-        </select>
-        <button type="submit">➕ Add Task</button>
-      </form>
+      </div>
 
-      {/* Task List */}
-      {tasks.length > 0 ? (
-        tasks.map((task) => (
-          <TaskCard
-            key={task._id}
-            task={task.title}
-            excuse={excuses[Math.floor(Math.random() * excuses.length)]}
-            motivation={
-              motivations[Math.floor(Math.random() * motivations.length)]
+      <div style={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
+        <div style={{ flex: "1" }}>
+          <label style={{ display: "block", marginBottom: "5px" }}>
+            Priority:
+          </label>
+          <select
+            value={newTask.priority}
+            onChange={(e) =>
+              setNewTask({ ...newTask, priority: e.target.value })
             }
+            style={{
+              padding: "10px",
+              width: "100%",
+              fontSize: "16px",
+              borderRadius: "5px",
+              border: "1px solid #555",
+            }}
+          >
+            <option value="Low">Low 🟢</option>
+            <option value="Medium">Medium 🟡</option>
+            <option value="High">High 🔥</option>
+          </select>
+        </div>
+
+        <div style={{ flex: "1" }}>
+          <label style={{ display: "block", marginBottom: "5px" }}>
+            Deadline (Optional):
+          </label>
+          <input
+            type="date"
+            value={newTask.deadline}
+            onChange={(e) =>
+              setNewTask({ ...newTask, deadline: e.target.value })
+            }
+            style={{
+              padding: "10px",
+              width: "100%",
+              fontSize: "16px",
+              borderRadius: "5px",
+              border: "1px solid #555",
+            }}
           />
-        ))
-      ) : (
-        <p>No tasks yet! Maybe later? 😆</p>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        disabled={loading}
+        style={{
+          padding: "12px",
+          fontSize: "16px",
+          backgroundColor: "#4CAF50",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: loading ? "not-allowed" : "pointer",
+        }}
+      >
+        {loading ? "Adding..." : "➕ Add Task (or procrastinate it later)"}
+      </button>
+    </form>
+  );
+
+  return (
+    <div
+      style={{
+        maxWidth: "800px",
+        margin: "0 auto",
+        padding: "20px",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <div style={{ textAlign: "center", marginBottom: "30px" }}>
+        <h1 style={{ fontSize: "2.5rem" }}>
+          🕰️ Procrastinator's To-Do List 😴
+        </h1>
+        <h3>The to-do list that *understands* your desire to do nothing.</h3>
+      </div>
+
+      {renderNavButtons()}
+
+      {activeView === "tasks" && (
+        <>
+          {renderTaskForm()}
+          <TaskList key={`task-list-${Date.now()}`} />
+        </>
       )}
+
+      {activeView === "graveyard" && <TaskGraveyard />}
+
+      {activeView === "insights" && <ProductivityInsights />}
     </div>
   );
 }
