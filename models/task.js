@@ -11,11 +11,22 @@ const taskSchema = new mongoose.Schema(
       default: "Medium",
     }, // Task priority
 
-    // 🎭 Fun procrastination excuse field
+    // Task deadline tracking
+    originalDeadline: { type: Date }, // Original due date
+    currentDeadline: { type: Date }, // Current due date after postponements
+
+    // Procrastination tracking
+    postponedCount: { type: Number, default: 0 }, // Number of times postponed
+    inGraveyard: { type: Boolean, default: false }, // Whether task is in the graveyard
+
+    // 🎭 Procrastination excuse field
     excuse: {
       type: String,
       default: "I'll start after just one more episode... 🍿",
     },
+
+    // Track when the task was last postponed
+    lastPostponedAt: { type: Date },
 
     // 💪 Over-the-top motivation message
     motivation: {
