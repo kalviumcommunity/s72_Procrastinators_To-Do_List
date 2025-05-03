@@ -2,14 +2,21 @@
   "name": "procrastinator-todo-db-setup",
   "version": "1.0.0",
   "description": "Database setup for Procrastinator's To-Do List project",
-  "main": "insert-data.js",
+  "main": "server.js",
   "scripts": {
-    "seed": "node insert-data.js"
+    "seed": "node insert-data.js",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "author": "Avinash Kumar Sah",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
-    "mongodb": "^5.1.0"
+    "express": "^4.18.2",
+    "mongodb": "^5.1.0",
+    "mongoose": "^7.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }
