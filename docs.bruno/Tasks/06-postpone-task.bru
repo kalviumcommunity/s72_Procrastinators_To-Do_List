@@ -1,0 +1,41 @@
+meta {
+  name: Postpone Task
+  type: http
+  seq: 6
+}
+
+patch {
+  url: http://localhost:3000/api/tasks/:id/postpone
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "newDeadline": "2024-03-01T23:59:59.999Z"
+  }
+}
+
+docs {
+  Postpones a task by updating its deadline and tracking postponement data.
+  
+  Path parameters:
+  - id: The MongoDB ObjectId of the task to postpone
+  
+  Required fields:
+  - newDeadline: The new deadline for the task (must be a valid date string)
+  
+  Effects:
+  - Increments the postponedCount
+  - Sets lastPostponedAt to current date
+  - Updates currentDeadline to newDeadline
+  - If postponedCount reaches 3 or more, moves the task to the graveyard
+  
+  Returns the updated task with postponement data.
+  Returns a 404 error if the task with the specified ID is not found.
+  Returns a 400 error if newDeadline is not provided.
+} 

@@ -1,0 +1,21 @@
+meta {
+  name: Check Server Status
+  type: http
+  seq: 0
+}
+
+get {
+  url: http://localhost:3000/
+  body: none
+  auth: none
+}
+
+docs {
+  Checks the server status and database connection.
+  
+  This endpoint returns the welcome message and the current status of the MongoDB connection,
+  which is useful for verifying that the API server is running and properly connected to
+  the database before making other requests.
+  
+  No parameters are required.
+} 

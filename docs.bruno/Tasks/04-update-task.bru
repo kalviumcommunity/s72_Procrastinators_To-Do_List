@@ -1,0 +1,42 @@
+meta {
+  name: Update Task
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3000/api/tasks/:id
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "title": "Updated task title",
+    "description": "Updated task description",
+    "priority": "Medium",
+    "currentDeadline": "2024-01-15T23:59:59.999Z"
+  }
+}
+
+docs {
+  Updates an existing task with the provided data.
+  
+  Path parameters:
+  - id: The MongoDB ObjectId of the task to update
+  
+  Fields that can be updated:
+  - title: must be at least 3 characters long
+  - description: detailed description of the task
+  - priority: "Low", "Medium", or "High"
+  - currentDeadline: current due date
+  - excuse: procrastination excuse
+  - motivation: motivational message
+  - completed: completion status (boolean)
+  
+  Returns the updated task. Returns a 404 error if the task with the specified ID is not found.
+} 
