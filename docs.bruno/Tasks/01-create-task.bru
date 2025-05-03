@@ -1,0 +1,42 @@
+meta {
+  name: Create New Task
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/api/tasks
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "title": "Complete project documentation",
+    "description": "Write comprehensive documentation for the Procrastinator's To-Do List project",
+    "priority": "High",
+    "originalDeadline": "2023-12-31T23:59:59.999Z",
+    "currentDeadline": "2023-12-31T23:59:59.999Z",
+    "excuse": "I need to do more research first...",
+    "motivation": "Future employers will see this in your portfolio!"
+  }
+}
+
+docs {
+  Creates a new task in the system with the specified details.
+  
+  Required fields:
+  - title: must be at least 3 characters long
+  
+  Optional fields:
+  - description: detailed description of the task
+  - priority: "Low", "Medium", or "High" (defaults to "Medium")
+  - originalDeadline: initial due date
+  - currentDeadline: current due date (same as originalDeadline for new tasks)
+  - excuse: procrastination excuse (has a default value)
+  - motivation: motivational message (has a default value)
+} 

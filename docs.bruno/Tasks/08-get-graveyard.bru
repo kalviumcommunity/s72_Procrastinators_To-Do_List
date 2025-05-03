@@ -1,0 +1,22 @@
+meta {
+  name: Get Tasks in Graveyard
+  type: http
+  seq: 8
+}
+
+get {
+  url: http://localhost:3000/api/tasks/graveyard
+  body: none
+  auth: none
+}
+
+docs {
+  Retrieves all tasks that have been moved to the "graveyard".
+  
+  A task is moved to the graveyard when it has been postponed 3 or more times.
+  
+  This endpoint returns all tasks with inGraveyard=true, providing a way
+  to view procrastinated tasks that need attention.
+  
+  No parameters are required.
+} 
